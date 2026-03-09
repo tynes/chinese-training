@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chinese Training - HSK 1-2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header id="header">
+      <h1 class="logo">中文 Training</h1>
+      <div class="header-controls">
+        <button id="theme-toggle" class="icon-btn" title="Toggle theme" aria-label="Toggle theme">
+          <span class="theme-icon-dark">&#9790;</span>
+          <span class="theme-icon-light">&#9728;</span>
+        </button>
+        <button id="reset-btn" class="icon-btn" title="Reset all progress" aria-label="Reset progress">&#8635;</button>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav id="nav">
+      <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+      <button class="nav-btn" data-view="flashcards">Flashcards</button>
+      <button class="nav-btn" data-view="reading">Reading</button>
+      <button class="nav-btn" data-view="writing">Writing</button>
+      <button class="nav-btn" data-view="listening">Listening</button>
+    </nav>
+
+    <!-- TTS Warning Banner -->
+    <div id="tts-warning" class="banner hidden">
+      &#9888; No Chinese text-to-speech voice found. Audio features will be limited.
+    </div>
+
+    <!-- Dashboard View -->
+    <section id="view-dashboard" class="view active">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-learned">0</div>
+          <div class="stat-label">Words Learned</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-due">0</div>
+          <div class="stat-label">Due Today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-streak">0</div>
+          <div class="stat-label">Day Streak</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-reviews">0</div>
+          <div class="stat-label">Total Reviews</div>
+        </div>
+      </div>
+
+      <div class="progress-section">
+        <h2>HSK Progress</h2>
+        <div class="progress-bar-container">
+          <div class="progress-label">
+            <span>HSK 1</span>
+            <span id="hsk1-count">0 / 0</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="hsk1-progress"></div>
+          </div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-label">
+            <span>HSK 2</span>
+            <span id="hsk2-count">0 / 0</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="hsk2-progress"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-start">
+        <h2>Quick Start</h2>
+        <div class="quick-start-grid">
+          <button class="quick-btn" data-mode="flashcards">
+            <span class="quick-icon">&#128218;</span>
+            <span>Flashcards</span>
+            <span class="quick-desc">Spaced repetition</span>
+          </button>
+          <button class="quick-btn" data-mode="reading">
+            <span class="quick-icon">&#128214;</span>
+            <span>Reading</span>
+            <span class="quick-desc">Chinese &rarr; English</span>
+          </button>
+          <button class="quick-btn" data-mode="writing">
+            <span class="quick-icon">&#9998;</span>
+            <span>Writing</span>
+            <span class="quick-desc">English &rarr; Chinese</span>
+          </button>
+          <button class="quick-btn" data-mode="listening">
+            <span class="quick-icon">&#127911;</span>
+            <span>Listening</span>
+            <span class="quick-desc">Audio &rarr; Chinese</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flashcards View -->
+    <section id="view-flashcards" class="view">
+      <div class="mode-header">
+        <h2>Flashcards</h2>
+        <div class="mode-progress">
+          <span id="fc-progress">0 / 0</span>
+        </div>
+      </div>
+
+      <div id="fc-empty" class="empty-state hidden">
+        <p>No cards to review right now!</p>
+        <p>Come back later or start a quiz mode to learn new words.</p>
+      </div>
+
+      <div id="fc-card" class="card">
+        <div class="card-front">
+          <div class="card-chinese" id="fc-chinese"></div>
+          <button class="speaker-btn" id="fc-speak" title="Play audio" aria-label="Play audio">&#128264;</button>
+        </div>
+        <div class="card-back hidden" id="fc-back">
+          <div class="card-pinyin" id="fc-pinyin"></div>
+          <div class="card-english" id="fc-english"></div>
+        </div>
+        <button class="btn btn-primary" id="fc-show">Show Answer</button>
+        <div class="rating-buttons hidden" id="fc-ratings">
+          <button class="btn btn-again" data-rating="again">Again</button>
+          <button class="btn btn-hard" data-rating="hard">Hard</button>
+          <button class="btn btn-good" data-rating="good">Good</button>
+          <button class="btn btn-easy" data-rating="easy">Easy</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reading View -->
+    <section id="view-reading" class="view">
+      <div class="mode-header">
+        <h2>Reading</h2>
+        <div class="mode-progress">
+          <span id="rd-score">0 / 0</span>
+        </div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-prompt">
+          <div class="quiz-chinese" id="rd-chinese"></div>
+          <button class="speaker-btn" id="rd-speak" title="Play audio" aria-label="Play audio">&#128264;</button>
+        </div>
+        <div class="quiz-choices" id="rd-choices"></div>
+        <div class="quiz-feedback hidden" id="rd-feedback"></div>
+        <button class="btn btn-primary hidden" id="rd-next">Next</button>
+      </div>
+    </section>
+
+    <!-- Writing View -->
+    <section id="view-writing" class="view">
+      <div class="mode-header">
+        <h2>Writing</h2>
+        <div class="mode-progress">
+          <span id="wr-score">0 / 0</span>
+        </div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-prompt">
+          <div class="quiz-english" id="wr-english"></div>
+        </div>
+        <div class="quiz-choices" id="wr-choices"></div>
+        <div class="quiz-feedback hidden" id="wr-feedback">
+          <div class="feedback-pinyin" id="wr-pinyin"></div>
+        </div>
+        <button class="btn btn-primary hidden" id="wr-next">Next</button>
+      </div>
+    </section>
+
+    <!-- Listening View -->
+    <section id="view-listening" class="view">
+      <div class="mode-header">
+        <h2>Listening</h2>
+        <div class="mode-progress">
+          <span id="ls-score">0 / 0</span>
+        </div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="quiz-prompt">
+          <button class="speaker-btn speaker-btn-large" id="ls-speak" title="Replay audio" aria-label="Replay audio">&#128264;</button>
+          <div class="quiz-hint hidden" id="ls-hint"></div>
+        </div>
+        <div class="quiz-choices" id="ls-choices"></div>
+        <div class="quiz-feedback hidden" id="ls-feedback"></div>
+        <button class="btn btn-primary hidden" id="ls-next">Next</button>
+      </div>
+    </section>
+
+    <!-- Keyboard Shortcuts Help -->
+    <div id="shortcuts-hint" class="shortcuts-hint">
+      <span>Space: show/replay</span>
+      <span>1-4: choose/rate</span>
+      <span>N: next</span>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
